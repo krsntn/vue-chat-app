@@ -31,7 +31,6 @@ export default {
   },
   components: {},
   created() {
-    console.log('created', this.text);
     if (this.text && hasOnlyOneEmoji(this.text)) {
       const count = 12;
       for (let index = 0; index < count; index++) {

@@ -16,6 +16,7 @@ import Header from './components/Header';
 import ChatFrame from './components/ChatFrame';
 import TextInput from './components/TextInput';
 import FloatingEmoji from './components/FloatingEmoji';
+import userData from './data/users.json';
 
 export default {
   name: 'App',
@@ -27,19 +28,36 @@ export default {
     };
   },
   methods: {},
+  mounted() {
+    // fix mobile view - height
+    const convertStyle = () => {
+      const height = window.innerHeight;
+      document.querySelector('.container').style.height = `${height}px`;
+    };
+    window.addEventListener('resize', convertStyle);
+    window.addEventListener('DOMContentLoaded', convertStyle);
+  },
   async created() {
-    // get random user
-    await fetch('https://randomuser.me/api')
-      .then((res) => res.json())
-      .then((data) => {
-        const { username, uuid } = data.results[0].login;
-        this.user = {
-          username,
-          uuid,
-        };
-      });
+    // *get random user - after n requests, not working in prod anymore
+    // await fetch('https://randomuser.me/api')
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     const { username, uuid } = data.results[0].login;
+    //     this.user = {
+    //       username,
+    //       uuid,
+    //     };
+    //   });
 
-    subscribeMsg(this.msgs);
+    const randomNumber = Math.floor(Math.random() * 15);
+    const selectedUser = userData.results[randomNumber];
+
+    this.user = {
+      username: selectedUser.login.username,
+      uuid: selectedUser.login.username,
+    };
+
+    subscribeMsg(this.msgs, this.user);
   },
 };
 </script>
@@ -70,6 +88,5 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 </style>

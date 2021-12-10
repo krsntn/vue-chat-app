@@ -1,59 +1,71 @@
 <template>
-  <div
-    :class="`row ${msg.isContMsg ? '' : 'space'} ${
-      user.uuid === msg.uid ? 'right' : ''
-    }`"
-  >
+  <div>
+    <DateBubble v-show="source.isNewDate" :date="source.createdAt" />
     <div
-      :class="`${user.uuid === msg.uid ? 'bubble-me' : 'bubble'} ${
-        !msg.isNewDate && msg.isContMsg ? '' : 'first'
+      :class="`row ${source.isContMsg ? '' : 'space'} ${
+        source.user.uuid === source.uid ? 'right' : ''
       }`"
     >
       <div
-        v-show="user.uuid !== msg.uid && (msg.isNewDate || !msg.isContMsg)"
-        class="username"
-        :style="{ color: msg.color }"
+        :class="`${source.user.uuid === source.uid ? 'bubble-me' : 'bubble'} ${
+          !source.isNewDate && source.isContMsg ? '' : 'first'
+        }`"
       >
-        {{ msg.name }}
+        <div
+          v-show="
+            source.user.uuid !== source.uid &&
+            (source.isNewDate || !source.isContMsg)
+          "
+          class="username"
+          :style="{ color: source.color }"
+        >
+          {{ source.name }}
+        </div>
+        <span class="text">{{ source.text }}</span>
+        <span class="time">{{ time }}</span>
       </div>
-      <span class="text">{{ msg.text }}</span>
-      <span class="time">{{ time }}</span>
     </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
+import DateBubble from './DateBubble';
 
 export default {
   name: 'ChatMessage',
   props: {
-    msg: Object,
-    user: Object,
+    source: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
       time: null,
     };
   },
-  components: {},
-  created() {
-    if (this.msg?.createdAt) {
-      this.time = moment(this.msg.createdAt).format('H:mm');
-    }
-    const colors = [
-      '#0275d8',
-      '#5cb85c',
-      '#5bc0de',
-      '#f0ad4e',
-      '#d9534f',
-      '#d86df1',
-      '#012572',
-      '#6e30a1',
-    ];
+  components: { DateBubble },
+  mounted() {
+    if (this.source?.createdAt) {
+      this.time = moment(this.source.createdAt).format('H:mm');
 
-    this.msg.color =
-      colors[this.msg.uid.slice(-1).charCodeAt(0) % colors.length];
+      const colors = [
+        '#0275d8',
+        '#5cb85c',
+        '#5bc0de',
+        '#f0ad4e',
+        '#d9534f',
+        '#d86df1',
+        '#012572',
+        '#6e30a1',
+      ];
+
+      this.source.color =
+        colors[this.source.uid.slice(-1).charCodeAt(0) % colors.length];
+    }
   },
 };
 </script>

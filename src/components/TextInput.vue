@@ -34,14 +34,17 @@ export default {
   methods: {
     onSubmit(e) {
       e.preventDefault();
-      const newMsg = {
-        name: this.user.username,
-        text: this.text,
-        uid: this.user.uuid,
-      };
-      createMsg(newMsg);
 
-      this.text = '';
+      if (this.text.length > 0) {
+        const newMsg = {
+          name: this.user.username,
+          text: this.text,
+          uid: this.user.uuid,
+        };
+        createMsg(newMsg);
+
+        this.text = '';
+      }
     },
   },
   mounted() {
@@ -70,11 +73,12 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
+  gap: 10px;
   padding: 10px 6px;
 }
 
 .text-area {
-  width: 80%;
+  flex: 1;
   border-radius: 99999px;
   background: #fff;
   border: none;
@@ -95,12 +99,12 @@ export default {
 }
 
 .btn {
+  width: 50px;
   display: inline-block;
   background: #00897b;
   color: #fff;
   border: none;
   height: 50px;
-  width: 10%;
   border-radius: 9999px;
   cursor: pointer;
   text-decoration: none;

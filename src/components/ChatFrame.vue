@@ -1,16 +1,19 @@
 <template>
   <div id="chatFrame" class="chat-frame">
-    <div :key="msg.id" v-for="msg in msgs">
-      <DateBubble v-show="msg.isNewDate" :date="msg.createdAt" />
-      <ChatMessage :msg="msg" :user="user" />
-    </div>
+    <virtual-list
+      style="padding: 0 16px; height: 100%; overflow-y: auto"
+      :data-key="'id'"
+      :data-sources="msgs"
+      :data-component="chatMessage"
+      :estimate-size="50"
+      @resized="onItemRendered"
+      ref="vsl"
+    />
   </div>
 </template>
 
 <script>
-import { scrollToBottom } from '../helper/scroll';
 import ChatMessage from './ChatMessage';
-import DateBubble from './DateBubble';
 
 export default {
   name: 'ChatFrame',
@@ -18,11 +21,41 @@ export default {
     msgs: Array,
     user: Object,
   },
-  components: { ChatMessage, DateBubble },
-  created() {
-    setTimeout(() => {
-      scrollToBottom();
-    }, 1000);
+  data() {
+    return {
+      chatMessage: ChatMessage,
+      param: {
+        isInitialLoaded: false,
+        msgSize: 0,
+      },
+    };
+  },
+  methods: {
+    onItemRendered() {
+      if (!this.$refs.vsl) {
+        return;
+      }
+
+      // initial load, scroll to bottom
+      if (
+        !this.param.isInitialLoaded &&
+        this.$refs.vsl.getSizes() >= this.param.msgSize
+      ) {
+        this.param.isInitialLoaded = true;
+        this.setVirtualListToBottom();
+      }
+    },
+
+    setVirtualListToBottom() {
+      if (this.$refs.vsl) {
+        this.$refs.vsl.scrollToBottom();
+      }
+    },
+  },
+  updated() {
+    this.$nextTick(() => {
+      this.setVirtualListToBottom();
+    });
   },
 };
 </script>
@@ -30,8 +63,6 @@ export default {
 <style scoped>
 .chat-frame {
   flex: 1;
-  overflow: auto;
   height: 100px;
-  padding: 0 16px;
 }
 </style>

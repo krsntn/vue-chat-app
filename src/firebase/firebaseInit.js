@@ -14,7 +14,6 @@ import {
 import moment from 'moment';
 import firebaseConfig from './firebaseConfig';
 import { massageData } from '../helper/massageMsg';
-import { scrollToBottom } from '../helper/scroll';
 
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -33,7 +32,7 @@ export const createMsg = async (msg) => {
   }
 };
 
-export const subscribeMsg = (data) => {
+export const subscribeMsg = (data, user) => {
   const q = query(
     collection(db, 'messages'),
     where('createdAt', '!=', null, orderBy('createdAt', 'desc'))
@@ -46,13 +45,11 @@ export const subscribeMsg = (data) => {
           id: change.doc.id,
           ...change.doc.data(),
           createdAt: moment(change.doc.data().createdAt.seconds * 1000),
+          user,
         });
       }
     });
     massageData(data);
-    setTimeout(() => {
-      scrollToBottom();
-    }, 100);
     return data;
   });
 };
