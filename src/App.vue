@@ -1,26 +1,18 @@
 <template>
   <div class="container">
-    <Header title="Lorem Ipsum" />
-    <ChatFrame :msgs="msgs" :user="user" />
+    <div />
     <TextInput :user="user" />
-    <FloatingEmoji
-      :key="msgs.length"
-      :text="msgs.length > 0 ? msgs[msgs.length - 1].text : null"
-    />
   </div>
 </template>
 
 <script>
 import { subscribeMsg } from './firebase/firebaseInit';
-import Header from './components/Header';
-import ChatFrame from './components/ChatFrame';
 import TextInput from './components/TextInput';
-import FloatingEmoji from './components/FloatingEmoji';
 import userData from './data/users.json';
 
 export default {
   name: 'App',
-  components: { Header, ChatFrame, TextInput, FloatingEmoji },
+  components: { TextInput },
   data() {
     return {
       msgs: [],
@@ -31,7 +23,19 @@ export default {
   mounted() {
     // fix mobile view - height
     const convertStyle = () => {
-      const height = window.innerHeight;
+      // const height = window.innerHeight;
+      // document.querySelector('.container').style.height = `${height}px`;
+      const body = document.body,
+        html = document.documentElement;
+
+      const height = Math.max(
+        window.innerHeight,
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      );
       document.querySelector('.container').style.height = `${height}px`;
     };
     window.addEventListener('resize', convertStyle);
@@ -68,7 +72,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
   text-align: left;
   scroll-behavior: smooth;
 }
@@ -88,5 +91,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  background: gray;
 }
 </style>

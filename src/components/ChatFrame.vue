@@ -63,6 +63,5 @@ export default {
 <style scoped>
 .chat-frame {
   flex: 1;
-  height: 100px;
 }
 </style>
