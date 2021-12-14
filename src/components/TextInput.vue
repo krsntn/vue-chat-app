@@ -70,6 +70,8 @@ export default {
 
 <style scoped>
 .wrapped {
+  position: fixed;
+  bottom: 0;
   display: flex;
   justify-content: space-around;
   align-items: flex-end;

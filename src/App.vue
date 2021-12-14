@@ -1,8 +1,5 @@
 <template>
-  <div class="container">
-    <div />
-    <TextInput :user="user" />
-  </div>
+  <TextInput :user="user" />
 </template>
 
 <script>
